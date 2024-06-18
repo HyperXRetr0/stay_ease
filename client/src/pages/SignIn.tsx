@@ -73,7 +73,7 @@ const SignIn = () => {
           </Link>
         </span>
         <button
-          className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-xl"
+          className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-xl rounded-md"
           type="submit"
         >
           Sign In
