@@ -1,5 +1,5 @@
 import express from "express";
-import { create, getAll } from "../controllers/my-hotels";
+import { create, getAll, getById, updateHotel } from "../controllers/my-hotels";
 import { upload } from "../middleware/mutler";
 import verifyToken from "../middleware/auth";
 import { body } from "express-validator";
@@ -29,5 +29,9 @@ router.post(
 );
 
 router.get("/", verifyToken, getAll);
+
+router.get("/:id", verifyToken, getById);
+
+router.put("/:id", verifyToken, upload.array("imageFiles"), updateHotel);
 
 export default router;
