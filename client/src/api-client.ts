@@ -1,6 +1,6 @@
 import { RegisterFormData } from "./pages/Register";
 import { SignInFormData } from "./pages/SignIn";
-import { HotelType } from "../../server/src/shared/types";
+import { HotelSearchResponse, HotelType } from "../../server/src/shared/types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
@@ -89,9 +89,7 @@ export const fetchMyHotelById = async (hotelId: string): Promise<HotelType> => {
   return data.hotel;
 };
 
-export const updateMyHotelById = async (
-  hotelFormData: FormData
-): Promise<HotelType> => {
+export const updateMyHotelById = async (hotelFormData: FormData) => {
   const response = await fetch(
     `${API_BASE_URL}/api/my-hotels/${hotelFormData.get("id")}`,
     {
@@ -105,4 +103,54 @@ export const updateMyHotelById = async (
   }
   const data = await response.json();
   return data.hotel;
+};
+
+export type SearchParams = {
+  destination?: string;
+  checkIn?: string;
+  checkOut?: string;
+  adultCount?: string;
+  childCount?: string;
+  page?: string;
+  facilities?: string[];
+  types?: string[];
+  stars?: string[];
+  maxPrice?: string;
+  sortOption?: string;
+};
+
+export const searchHotels = async (
+  searchParams: SearchParams
+): Promise<HotelSearchResponse> => {
+  const queryParams = new URLSearchParams();
+  queryParams.append("destination", searchParams.destination || "");
+  queryParams.append("checkIn", searchParams.checkIn || "");
+  queryParams.append("checkOut", searchParams.checkOut || "");
+  queryParams.append("adultCount", searchParams.adultCount || "");
+  queryParams.append("childCount", searchParams.childCount || "");
+  queryParams.append("page", searchParams.page || "");
+  queryParams.append("maxPrice", searchParams.maxPrice || "");
+  queryParams.append("sortOption", searchParams.sortOption || "");
+  searchParams.facilities?.forEach((facility) =>
+    queryParams.append("facilities", facility)
+  );
+  searchParams.stars?.forEach((star) => queryParams.append("stars", star));
+  searchParams.types?.forEach((type) => queryParams.append("types", type));
+  const response = await fetch(
+    `${API_BASE_URL}/api/hotels/search?${queryParams}`
+  );
+  if (!response.ok) {
+    throw new Error("Error Fetching Hotels");
+  }
+  const data = await response.json();
+  return data.response;
+};
+
+export const fetchHotels = async (): Promise<HotelType[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/hotels`);
+  if (!response.ok) {
+    throw new Error("Error fetching hotels");
+  }
+  const data = await response.json();
+  return data.hotels;
 };
