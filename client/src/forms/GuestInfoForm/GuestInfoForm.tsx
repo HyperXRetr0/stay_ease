@@ -58,7 +58,7 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
       data.adultCount,
       data.childCount
     );
-    navigate(`/hotel/$${hotelId}/booking`, { state: { from: location } });
+    navigate(`/hotel/${hotelId}/booking`, { state: { from: location } });
   };
   return (
     <div className="flex flex-col p-4 bg-blue-200 gap-4">
