@@ -1,6 +1,7 @@
 import { query, Request, Response } from "express";
 import Hotel from "../models/hotel";
 import { HotelSearchResponse } from "../shared/types";
+import { validationResult } from "express-validator";
 
 export const searchHotel = async (req: Request, res: Response) => {
   try {
@@ -53,6 +54,29 @@ export const getHotels = async (req: Request, res: Response) => {
     return res.status(201).json({
       success: true,
       hotels,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
+export const getHotelById = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array(),
+    });
+  }
+  const id = req.params.id.toString();
+  try {
+    const hotel = await Hotel.findById(id);
+    return res.status(201).json({
+      success: true,
+      hotel,
     });
   } catch (error) {
     return res.status(500).json({
