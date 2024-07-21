@@ -44,7 +44,7 @@ export const register = async (req: Request, res: Response) => {
         message: "User already exists",
       });
     }
-    user = new User();
+    user = new User(req.body);
     await user.save();
 
     const token = jwt.sign(
